@@ -32,9 +32,6 @@ export const AuthProvider = ({ children }) => {
 
   const register = async (data) => {
     const res = await api.post('/auth/register', data);
-    localStorage.setItem('civicToken', res.data.token);
-    localStorage.setItem('civicUser', JSON.stringify(res.data.user));
-    setUser(res.data.user);
     return res.data;
   };
 

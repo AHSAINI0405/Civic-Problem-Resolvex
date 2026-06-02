@@ -18,8 +18,8 @@ export default function Signup() {
     setLoading(true);
     try {
       await register({ name: form.name, email: form.email, password: form.password });
-      toast.success('Account created! Check your email to verify. 📧');
-      navigate('/dashboard');
+      toast.success('Account created! Please check your email to verify before logging in. 📧', { duration: 6000 });
+      navigate('/login');
     } catch (err) {
       toast.error(err.response?.data?.message || 'Registration failed.');
     } finally {

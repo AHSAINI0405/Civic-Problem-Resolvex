@@ -39,7 +39,10 @@ exports.register = asyncHandler(async (req, res) => {
     console.error('Email send failed:', e.message);
   }
 
-  sendTokenResponse(user, 201, res);
+  res.status(201).json({
+    success: true,
+    message: 'Registration successful! Please check your email to verify your account before logging in.'
+  });
 });
 
 // @desc    Login
