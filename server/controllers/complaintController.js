@@ -59,7 +59,7 @@ exports.createComplaint = asyncHandler(async (req, res) => {
   const populated = await complaint.populate('user', 'name email avatar notificationPrefs');
   socketService.alertAdmin({ complaint: populated, message: 'New complaint received!' });
 
-  if (populated.user && !populated.isAnonymous) {
+  if (populated.user) {
     if (populated.user.notificationPrefs?.email) {
       emailService.sendComplaintRegistrationEmail(
         populated.user.email,
@@ -130,16 +130,18 @@ exports.updateStatus = asyncHandler(async (req, res) => {
   await complaint.save();
 
   // Notify citizen
-  if (complaint.user && !complaint.isAnonymous) {
+  if (complaint.user) {
     await socketService.createNotification({
       userId: complaint.user._id,
       title: `Complaint ${status.replace('_', ' ')}`,
       message: `Your complaint "${complaint.title}" is now ${status.replace('_', ' ')}.`,
       type: 'status_update',
       complaintId: complaint._id,
-    });
+    }).catch(err => console.error('Error creating status update socket notification:', err));
+
     if (complaint.user.notificationPrefs?.email) {
-      emailService.sendStatusUpdateEmail(complaint.user.email, complaint.user.name, complaint.title, status);
+      emailService.sendStatusUpdateEmail(complaint.user.email, complaint.user.name, complaint.title, status)
+        .catch(err => console.error('Error sending status update email:', err));
     }
   }
 
@@ -179,14 +181,14 @@ exports.assignComplaint = asyncHandler(async (req, res) => {
   }
 
   // Notify citizen (assigned)
-  if (complaint.user && !complaint.isAnonymous) {
+  if (complaint.user) {
     await socketService.createNotification({
       userId: complaint.user._id,
       title: 'Complaint Assigned',
       message: `Your complaint "${complaint.title}" has been assigned to a department.`,
       type: 'status_update',
       complaintId: complaint._id,
-    });
+    }).catch(err => console.error('Error creating assignment socket notification:', err));
 
     if (complaint.user.notificationPrefs?.email) {
       await emailService.sendStatusUpdateEmail(
@@ -194,7 +196,7 @@ exports.assignComplaint = asyncHandler(async (req, res) => {
         complaint.user.name,
         complaint.title,
         'assigned'
-      );
+      ).catch(err => console.error('Error sending assignment email:', err));
     }
   }
 

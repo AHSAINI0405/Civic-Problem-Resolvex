@@ -33,14 +33,14 @@ exports.acceptComplaint = asyncHandler(async (req, res) => {
   addTimeline(complaint, 'in_progress', 'Department accepted and started working on this complaint.', req.user._id);
   await complaint.save();
 
-  if (complaint.user && !complaint.isAnonymous) {
+  if (complaint.user) {
     await socketService.createNotification({
       userId: complaint.user._id,
       title: 'Complaint Accepted',
       message: `Your complaint "${complaint.title}" is now being worked on.`,
       type: 'status_update',
       complaintId: complaint._id,
-    });
+    }).catch(err => console.error('Error creating acceptance socket notification:', err));
 
     if (complaint.user.notificationPrefs?.email) {
       await emailService.sendStatusUpdateEmail(
@@ -48,7 +48,7 @@ exports.acceptComplaint = asyncHandler(async (req, res) => {
         complaint.user.name,
         complaint.title,
         'in_progress'
-      );
+      ).catch(err => console.error('Error sending acceptance email:', err));
     }
   }
 
@@ -69,14 +69,14 @@ exports.rejectComplaint = asyncHandler(async (req, res) => {
   addTimeline(complaint, 'rejected', reason || 'Rejected by department.', req.user._id);
   await complaint.save();
 
-  if (complaint.user && !complaint.isAnonymous) {
+  if (complaint.user) {
     await socketService.createNotification({
       userId: complaint.user._id,
       title: 'Complaint Rejected',
       message: `Your complaint "${complaint.title}" has been rejected.`,
       type: 'status_update',
       complaintId: complaint._id,
-    });
+    }).catch(err => console.error('Error creating rejection socket notification:', err));
 
     if (complaint.user.notificationPrefs?.email) {
       await emailService.sendStatusUpdateEmail(
@@ -84,7 +84,7 @@ exports.rejectComplaint = asyncHandler(async (req, res) => {
         complaint.user.name,
         complaint.title,
         'rejected'
-      );
+      ).catch(err => console.error('Error sending rejection email:', err));
     }
   }
 
@@ -111,14 +111,14 @@ exports.updateProgress = asyncHandler(async (req, res) => {
 
   await complaint.save();
 
-  if (complaint.user && !complaint.isAnonymous) {
+  if (complaint.user) {
     await socketService.createNotification({
       userId: complaint.user._id,
       title: 'Complaint Progress Updated',
       message: `Progress on your complaint "${complaint.title}" has been updated.`,
       type: 'status_update',
       complaintId: complaint._id,
-    });
+    }).catch(err => console.error('Error creating progress update socket notification:', err));
 
     if (complaint.user.notificationPrefs?.email) {
       await emailService.sendStatusUpdateEmail(
@@ -126,7 +126,7 @@ exports.updateProgress = asyncHandler(async (req, res) => {
         complaint.user.name,
         complaint.title,
         'in_progress'
-      );
+      ).catch(err => console.error('Error sending progress update email:', err));
     }
   }
 
@@ -161,14 +161,14 @@ exports.completeComplaint = asyncHandler(async (req, res) => {
     }
   }
 
-  if (complaint.user && !complaint.isAnonymous) {
+  if (complaint.user) {
     await socketService.createNotification({
       userId: complaint.user._id,
       title: 'Complaint Resolved! 🎉',
       message: `Your complaint "${complaint.title}" has been resolved.`,
       type: 'status_update',
       complaintId: complaint._id,
-    });
+    }).catch(err => console.error('Error creating resolution socket notification:', err));
 
     if (complaint.user.notificationPrefs?.email) {
       await emailService.sendStatusUpdateEmail(
@@ -176,7 +176,7 @@ exports.completeComplaint = asyncHandler(async (req, res) => {
         complaint.user.name,
         complaint.title,
         'resolved'
-      );
+      ).catch(err => console.error('Error sending resolution email:', err));
     }
   }
 
