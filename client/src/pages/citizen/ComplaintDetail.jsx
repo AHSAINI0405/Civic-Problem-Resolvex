@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Navbar from '../../components/Navbar';
 import { StatusBadge, PriorityBadge, CategoryBadge } from '../../components/Badges';
-import api from '../../services/api';
+import api, { getUploadUrl } from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
 import toast from 'react-hot-toast';
 import { ThumbsUp, MessageCircle, MapPin, Clock, User, Send, Share2, CheckCircle, Circle } from 'lucide-react';
@@ -124,7 +124,7 @@ export default function ComplaintDetail() {
                 <h3 className="section-title">Attached Images</h3>
                 <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
                   {images.map((img, i) => (
-                    <img key={i} src={img.url} alt={`img-${i}`} style={{ width: 140, height: 100, objectFit: 'cover', borderRadius: 8, border: '1px solid var(--border-solid)' }} />
+                    <img key={i} src={getUploadUrl(img.url)} alt={`img-${i}`} style={{ width: 140, height: 100, objectFit: 'cover', borderRadius: 8, border: '1px solid var(--border-solid)' }} />
                   ))}
                 </div>
               </div>
@@ -141,7 +141,7 @@ export default function ComplaintDetail() {
                 )}
                 <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
                   {proofImages.map((img, i) => (
-                    <img key={i} src={typeof img === 'string' ? img : img.url || img} alt={`resolution-proof-${i}`} style={{ width: 140, height: 100, objectFit: 'cover', borderRadius: 8, border: '1px solid rgba(16, 185, 129, 0.3)' }} />
+                    <img key={i} src={getUploadUrl(typeof img === 'string' ? img : img.url || img)} alt={`resolution-proof-${i}`} style={{ width: 140, height: 100, objectFit: 'cover', borderRadius: 8, border: '1px solid rgba(16, 185, 129, 0.3)' }} />
                   ))}
                 </div>
               </div>

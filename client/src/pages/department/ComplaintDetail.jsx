@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Navbar from '../../components/Navbar';
-import api from '../../services/api';
+import api, { getUploadUrl } from '../../services/api';
 import toast from 'react-hot-toast';
 import { StatusBadge, PriorityBadge, CategoryBadge } from '../../components/Badges';
 import { CheckCircle, AlertCircle, Play, Upload, X } from 'lucide-react';
@@ -66,8 +66,8 @@ export default function DeptComplaintDetail() {
               
               {c.images?.length > 0 && (
                 <div style={{ marginTop: 20 }}>
-                  <p className="text-sm font-semibold mb-2">Citizen Uploads</p>
-                  <div className="flex gap-2 flex-wrap">{c.images.map((img, i) => <img key={i} src={img.url} alt="upload" style={{ width: 120, height: 80, objectFit: 'cover', borderRadius: 8 }}/>)}</div>
+                   <p className="text-sm font-semibold mb-2">Citizen Uploads</p>
+                   <div className="flex gap-2 flex-wrap">{c.images.map((img, i) => <img key={i} src={getUploadUrl(img.url)} alt="upload" style={{ width: 120, height: 80, objectFit: 'cover', borderRadius: 8 }}/>)}</div>
                 </div>
               )}
             </div>
