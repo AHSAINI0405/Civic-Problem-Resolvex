@@ -124,3 +124,31 @@ exports.sendStatusUpdateEmail = async (email, userName, complaintTitle, newStatu
       </div>`,
   });
 };
+
+exports.sendComplaintRegistrationEmail = async (email, userName, complaintTitle, category, priority) => {
+  await sendEmail({
+    to: email,
+    subject: `📝 Complaint Registered Successfully: ${complaintTitle}`,
+    html: `
+      <div style="font-family:sans-serif;max-width:520px;margin:auto;background:#0f172a;color:#e2e8f0;border-radius:16px;overflow:hidden;">
+        <div style="background:linear-gradient(135deg,#6366f1,#8b5cf6);padding:32px;text-align:center;">
+          <h1 style="margin:0;color:#fff;font-size:28px;">Resolvex</h1>
+          <p style="color:#c7d2fe;margin:8px 0 0;">Civic Complaint Successfully Registered</p>
+        </div>
+        <div style="padding:32px;">
+          <p style="color:#94a3b8;">Hi <strong style="color:#e2e8f0;">${userName}</strong>,</p>
+          <p style="color:#94a3b8;">Your complaint has been successfully registered and is being reviewed by our administration team.</p>
+          <div style="background:#1e293b;padding:20px;border-radius:8px;margin:20px 0;border-left:4px solid #6366f1;">
+            <p style="margin:0 0 8px;color:#e2e8f0;"><strong style="color:#94a3b8;">Title:</strong> ${complaintTitle}</p>
+            <p style="margin:0 0 8px;color:#e2e8f0;"><strong style="color:#94a3b8;">Category:</strong> ${category}</p>
+            <p style="margin:0;color:#e2e8f0;"><strong style="color:#94a3b8;">Priority:</strong> <span style="text-transform:uppercase;font-weight:600;color:${priority === 'critical' ? '#ef4444' : priority === 'high' ? '#f59e0b' : '#3b82f6'};">${priority}</span></p>
+          </div>
+          <div style="text-align:center;margin:24px 0;">
+            <a href="${process.env.CLIENT_URL}/complaints" style="background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;padding:12px 28px;border-radius:8px;text-decoration:none;font-weight:600;display:inline-block;">Track Your Complaint</a>
+          </div>
+          <p style="color:#64748b;font-size:13px;line-height:1.4;margin:0;">Thank you for helping us improve our community. You will receive updates as actions are taken on your complaint.</p>
+        </div>
+      </div>`,
+  });
+};
+

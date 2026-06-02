@@ -240,3 +240,35 @@ tbody tr:hover { background: var(--bg3); }
 /* Recharts overrides */
 .recharts-cartesian-axis-tick-value { fill: var(--text-muted) !important; font-size: 12px; }
 .recharts-legend-item-text { color: var(--text-muted) !important; font-size: 12px; }
+
+/* Premium opaque styling for fixed and absolute overlay glass elements to prevent bleed-through */
+[style*="position: fixed"] .glass,
+[style*="position: absolute"] .glass,
+[style*="position:fixed"] .glass,
+[style*="position:absolute"] .glass,
+.glass[style*="position: absolute"],
+.glass[style*="position: fixed"],
+.glass[style*="position:absolute"],
+.glass[style*="position:fixed"] {
+  background: var(--bg2) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: 1px solid rgba(99, 102, 241, 0.25) !important;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.7), var(--shadow-glow) !important;
+}
+
+[style*="position: fixed"] .glass-sm,
+[style*="position: absolute"] .glass-sm,
+[style*="position:fixed"] .glass-sm,
+[style*="position:absolute"] .glass-sm,
+.glass-sm[style*="position: absolute"],
+.glass-sm[style*="position: fixed"],
+.glass-sm[style*="position:absolute"],
+.glass-sm[style*="position:fixed"] {
+  background: var(--bg2) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: 1px solid rgba(99, 102, 241, 0.2) !important;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6) !important;
+}
+

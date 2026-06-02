@@ -56,8 +56,20 @@ exports.createComplaint = asyncHandler(async (req, res) => {
     timeline: [{ status: 'pending', message: 'Complaint submitted successfully.', updatedBy: req.user._id, updatedAt: new Date() }],
   });
 
-  const populated = await complaint.populate('user', 'name email avatar');
+  const populated = await complaint.populate('user', 'name email avatar notificationPrefs');
   socketService.alertAdmin({ complaint: populated, message: 'New complaint received!' });
+
+  if (populated.user && !populated.isAnonymous) {
+    if (populated.user.notificationPrefs?.email) {
+      emailService.sendComplaintRegistrationEmail(
+        populated.user.email,
+        populated.user.name,
+        populated.title,
+        populated.category,
+        populated.priority
+      ).catch(err => console.error('Error sending complaint registration email:', err));
+    }
+  }
 
   res.status(201).json({ success: true, complaint: populated, aiSuggestion: ai });
 });
@@ -142,7 +154,7 @@ exports.assignComplaint = asyncHandler(async (req, res) => {
   const dept = await Department.findById(departmentId);
   if (!dept) return res.status(404).json({ success: false, message: 'Department not found.' });
 
-  const complaint = await Complaint.findById(req.params.id).populate('user', 'name email');
+  const complaint = await Complaint.findById(req.params.id).populate('user', 'name email notificationPrefs');
   if (!complaint) return res.status(404).json({ success: false, message: 'Complaint not found.' });
 
   complaint.assignedTo = departmentId;
@@ -166,8 +178,29 @@ exports.assignComplaint = asyncHandler(async (req, res) => {
     });
   }
 
+  // Notify citizen (assigned)
+  if (complaint.user && !complaint.isAnonymous) {
+    await socketService.createNotification({
+      userId: complaint.user._id,
+      title: 'Complaint Assigned',
+      message: `Your complaint "${complaint.title}" has been assigned to a department.`,
+      type: 'status_update',
+      complaintId: complaint._id,
+    });
+
+    if (complaint.user.notificationPrefs?.email) {
+      await emailService.sendStatusUpdateEmail(
+        complaint.user.email,
+        complaint.user.name,
+        complaint.title,
+        'assigned'
+      );
+    }
+  }
+
   res.json({ success: true, complaint });
 });
+
 
 // @desc    Upvote a complaint
 // @route   POST /api/complaints/:id/upvote
