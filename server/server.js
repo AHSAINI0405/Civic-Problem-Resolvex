@@ -20,6 +20,7 @@ const notifRoutes = require('./routes/notifications');
 const aiRoutes = require('./routes/ai');
 
 const app = express();
+app.set('trust proxy', 1); // Trust first proxy (Render)
 const server = http.createServer(app);
 
 // Socket.io setup
