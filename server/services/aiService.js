@@ -50,7 +50,7 @@ exports.classifyComplaint = async (title, description) => {
     return mockClassify(title, description);
   }
   try {
-    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash-lite' });
     const prompt = `You are an AI assistant for a civic complaint management system. Analyze the following complaint and respond ONLY with a valid JSON object.
 
 Complaint Title: "${title}"
@@ -100,7 +100,7 @@ exports.getSmartSuggestion = async (partialText) => {
     return 'Provide specific details including location and how long this issue has persisted.';
   }
   try {
-    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
+    const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash-lite' });
     const prompt = `A citizen is typing a civic complaint: "${partialText}". Give ONE short, helpful suggestion (max 120 chars) to help them describe the issue better. Respond with just the suggestion text, no JSON, no quotes.`;
     const result = await model.generateContent(prompt);
     return result.response.text().trim().slice(0, 150);
@@ -141,7 +141,7 @@ Be friendly, concise, and always guide them to file a complaint if they have an 
 
   try {
     const model = genAI.getGenerativeModel({ 
-      model: 'gemini-2.5-flash',
+      model: 'gemini-2.5-flash-lite',
       systemInstruction: systemPrompt 
     });
     
