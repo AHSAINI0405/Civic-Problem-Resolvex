@@ -25,15 +25,21 @@ exports.createComplaint = asyncHandler(async (req, res) => {
   // AI classification
   const ai = await aiService.classifyComplaint(title, description);
 
-  // Handle uploaded files
-  const images = (req.files?.images || []).map((f) => ({
-    url: `/uploads/${f.filename}`,
-    publicId: f.filename,
-  }));
-  const videos = (req.files?.videos || []).map((f) => ({
-    url: `/uploads/${f.filename}`,
-    publicId: f.filename,
-  }));
+  // Handle uploaded files (support Cloudinary and local disk fallback)
+  const images = (req.files?.images || []).map((f) => {
+    const isCloudinary = f.path && (f.path.startsWith('http://') || f.path.startsWith('https://'));
+    return {
+      url: isCloudinary ? f.path : `/uploads/${f.filename}`,
+      publicId: f.filename || f.public_id,
+    };
+  });
+  const videos = (req.files?.videos || []).map((f) => {
+    const isCloudinary = f.path && (f.path.startsWith('http://') || f.path.startsWith('https://'));
+    return {
+      url: isCloudinary ? f.path : `/uploads/${f.filename}`,
+      publicId: f.filename || f.public_id,
+    };
+  });
 
   const slaDeadline = new Date();
   slaDeadline.setDate(slaDeadline.getDate() + (SLA_DAYS[ai.priority] || 7));

@@ -1,0 +1,908 @@
+========================================================================
+  RESOLVEX - SPEAKER NOTES (Simple Language)
+  For: Amit Saini | MCA | Kurukshetra University
+========================================================================
+
+These notes are in simple English so ANYONE can present the project.
+Each section matches one slide in the PowerPoint presentation.
+
+------------------------------------------------------------------------
+SLIDE 1 - TITLE SLIDE: RESOLVEX
+------------------------------------------------------------------------
+
+PROJECT NAME: Resolvex - Civic Problem Management System
+
+WHAT IS THIS PROJECT?
+  Resolvex is a website (web application) where:
+  - Citizens report civic problems (broken roads, no water, streetlights, sewage)
+  - Government departments see the problems and fix them
+  - An Admin manages everything in the system
+  - AI automatically understands what type of problem is reported
+
+LANGUAGE USED:
+  JavaScript - used for BOTH the frontend (browser) AND backend (server)
+  This is called a "Full-Stack JavaScript" application.
+
+KEY TECHNOLOGIES:
+  Frontend  : React.js  (builds what users see in the browser)
+  Backend   : Node.js + Express.js  (the server / API)
+  Database  : MongoDB  (stores all data - users, complaints, departments)
+  AI        : Google Gemini API  (auto-classifies complaints with AI)
+  Real-Time : Socket.io  (live notifications without refreshing the page)
+  Maps      : Leaflet.js  (interactive map for pinning problem location)
+  Uploads   : Multer + Cloudinary  (image and video file uploads to cloud)
+  Email     : Nodemailer  (sends verification and reset emails)
+  Scheduling: node-cron  (runs automatic SLA check every hour)
+
+HOW TO RUN THE PROJECT (for examiner/demo):
+  Terminal 1: cd server  ->  npm install  ->  npm start    (port 5000)
+  Terminal 2: cd client  ->  npm install  ->  npm run dev  (port 5173)
+  Browser: http://localhost:5173
+
+  Demo Login Accounts:
+  Admin    : admin@civic.com    / password
+  Citizen  : citizen@civic.com  / password
+  Dept     : dept@civic.com     / password
+
+------------------------------------------------------------------------
+SLIDE 2 - PROBLEM STATEMENT
+------------------------------------------------------------------------
+
+WHY DID I MAKE RESOLVEX?
+
+  PROBLEM 1 - No Easy Way to Report:
+    Most citizens have NO digital platform to report civic problems.
+    They have to physically visit offices or make phone calls.
+    This is inconvenient, slow, and often ignored.
+
+  PROBLEM 2 - No Tracking System:
+    Even when someone reports a problem, there is NO WAY to track it.
+    Citizens do not know if their complaint was received, being worked on,
+    or completely ignored.
+
+  PROBLEM 3 - Wrong Department Assignment:
+    A road problem should go to Roads Department.
+    A sewage problem should go to Sanitation Department.
+    Without a smart system, complaints go to wrong departments,
+    causing delays and confusion.
+
+  PROBLEM 4 - No Data or Accountability:
+    Government has NO DASHBOARD to see:
+    - Which areas have the most problems
+    - Which departments resolve complaints fastest or slowest
+    - How many complaints missed their resolution deadline
+
+  RESOLVEX solves ALL FOUR problems with one digital platform.
+
+------------------------------------------------------------------------
+SLIDE 3 - KEY FEATURES
+------------------------------------------------------------------------
+
+FEATURE 1 - AI Auto-Classification (Google Gemini API):
+  Citizen types complaint title and description.
+  Clicks "Analyze & Auto-Classify" button.
+  Google Gemini AI reads the text and returns:
+    - Category  : roads / water / sanitation / electricity / etc.
+    - Priority  : low / medium / high
+    - Confidence: e.g. 85% (how sure the AI is)
+    - Suggestion: "Please add your street address to help the team"
+  This saves time and prevents wrong categorization.
+  npm package: @google/generative-ai
+
+FEATURE 2 - Interactive Location Map (Leaflet.js):
+  Citizens open a real interactive map.
+  They can:
+    - Click "Detect My Location" -> GPS auto-detects coordinates
+    - Type an address and search
+    - Click anywhere on map to drop a pin
+  Coordinates saved with complaint so department knows where to go.
+  Library: Leaflet.js + react-leaflet + OpenStreetMap tiles (all free)
+
+FEATURE 3 - Real-Time Notifications (Socket.io):
+  When admin updates complaint status -> citizen gets notification INSTANTLY.
+  When admin assigns complaint -> department gets notified INSTANTLY.
+  No page refresh needed. Like WhatsApp messages arriving in real-time.
+  Library: Socket.io (WebSockets)
+
+FEATURE 4 - Admin Analytics Dashboard (Recharts):
+  Admin sees KPI (Key Performance Indicator) cards + charts showing:
+    - Total, Pending, Resolved, SLA Breached complaints
+    - Status distribution charts
+    - Department performance data
+  Library: Recharts
+
+FEATURE 5 - Department Management:
+  Admin creates government departments (Roads Dept, Water Dept, etc.)
+  Assigns complaints to the correct department.
+  Each department only sees their own assigned complaints.
+
+FEATURE 6 - Email Verification (Nodemailer):
+  When someone registers, a verification email is sent.
+  They must click the link in the email to activate their account.
+  This prevents spam and fake accounts.
+  Library: Nodemailer
+
+------------------------------------------------------------------------
+SLIDE 4 - TECHNOLOGY STACK (Languages & Libraries)
+------------------------------------------------------------------------
+
+PROGRAMMING LANGUAGE: JavaScript
+  Used for BOTH frontend (React) and backend (Node.js).
+  This is called "Full-Stack JavaScript" or the MERN stack variant.
+  (M=MongoDB, E=Express, R=React, N=Node.js)
+
+FRONTEND LIBRARIES (client/ folder):
++------------------+------------------------------------------------------+
+| Library          | Purpose                                              |
++------------------+------------------------------------------------------+
+| React.js         | Builds UI using reusable components and hooks        |
+| Vite             | Fast build tool / development server for React       |
+| React Router     | Handles page navigation without full page reload     |
+| Axios            | Sends HTTP requests to backend (GET, POST, PUT etc.) |
+| Socket.io-client | Real-time connection for live notifications          |
+| Leaflet.js       | Interactive maps with clickable pins                 |
+| Recharts         | Beautiful charts/graphs for Admin analytics          |
+| Framer Motion    | Smooth UI animations and transitions                 |
+| react-hot-toast  | Small popup success/error notification messages      |
++------------------+------------------------------------------------------+
+
+BACKEND LIBRARIES (server/ folder):
++--------------------+----------------------------------------------------+
+| Library            | Purpose                                            |
++--------------------+----------------------------------------------------+
+| Node.js            | JavaScript runtime for server-side code            |
+| Express.js         | Framework for creating REST API routes             |
+| MongoDB            | NoSQL database storing JSON-like documents         |
+| Mongoose           | Defines data schemas and simplifies DB queries     |
+| jsonwebtoken (JWT) | Creates secure login tokens after authentication   |
+| bcryptjs           | Hashes/encrypts passwords before storing in DB     |
+| Socket.io          | Server-side real-time WebSocket communication      |
+| Multer             | Handles file uploads (images/videos) from requests |
+| Cloudinary         | Cloud CDN storage for uploaded media files         |
+| Nodemailer         | Sends emails for verification and password reset   |
+| node-cron          | Runs scheduled background jobs (SLA monitoring)    |
+| @google/generative-ai | Google Gemini AI for complaint classification  |
+| Helmet             | Security headers to protect against web attacks    |
+| CORS               | Allows frontend to communicate with backend        |
+| dotenv             | Loads environment variables from .env file         |
++--------------------+----------------------------------------------------+
+
+------------------------------------------------------------------------
+SLIDE 5 - SYSTEM ARCHITECTURE
+------------------------------------------------------------------------
+
+HOW THE SYSTEM WORKS (Simple Explanation):
+
+  The application has THREE main parts:
+
+  1. FRONTEND (React + Vite) - Port 5173:
+     This is what the user sees in the browser.
+     Built with React.js components (reusable UI pieces).
+     Communicates with backend via HTTP requests (Axios).
+     Keeps a live WebSocket connection for real-time updates (Socket.io).
+
+  2. BACKEND (Node.js + Express) - Port 5000:
+     This is the brain/server of the application.
+     Handles all business logic (validate, authenticate, process).
+     Connects to external services: MongoDB, Gemini AI, Cloudinary, Email.
+     Runs Socket.io for real-time communication.
+     Runs a cron job every hour to check SLA deadlines.
+
+  3. DATABASE (MongoDB):
+     Stores everything: users, complaints, departments, notifications.
+     Hosted on MongoDB Atlas (cloud version - always online).
+
+  EXTERNAL SERVICES:
+  - Google Gemini AI  : complaint classification and chatbot
+  - Cloudinary CDN    : stores uploaded images and videos
+  - Nodemailer/Gmail  : sends verification and reset emails
+  - OpenStreetMap     : provides map tiles for Leaflet.js
+
+  DATA FLOW EXAMPLE (citizen submits complaint):
+  Browser -> React form -> Axios POST to /api/complaints -> JWT check ->
+  Multer reads files -> Cloudinary stores images -> Gemini AI classifies ->
+  Mongoose saves to MongoDB -> Socket.io notifies admin -> Response to browser
+
+------------------------------------------------------------------------
+SLIDE 6 - USER ROLES (Three Types of Users)
+------------------------------------------------------------------------
+
+THE SYSTEM HAS THREE USER TYPES:
+
+1. CITIZEN (General Public):
+   - Creates an account and verifies email
+   - Reports civic problems with photos, videos, and map location
+   - Uses AI to auto-classify their complaint
+   - Sees ONLY their own complaints (privacy protected)
+   - Tracks status: Pending -> Assigned -> In Progress -> Resolved
+   - Can upvote other complaints and add comments
+   - Receives real-time notifications when status changes
+
+2. ADMIN (Government Administrator):
+   - Sees ALL complaints from ALL citizens in the system
+   - Assigns complaints to the correct department
+   - Updates complaint status with remarks
+   - Blocks or unblocks any user account
+   - Creates and manages government departments
+   - Views full analytics dashboard (charts, KPI cards)
+   - Monitors SLA breaches (complaints that missed deadline)
+
+3. DEPARTMENT (Government Staff):
+   - Sees ONLY complaints assigned to THEIR department
+   - Cannot see another department's complaints
+   - Accepts complaint -> works on it -> uploads proof photos -> marks resolved
+   - Receives instant notifications when complaints are assigned
+   - Views their own performance statistics
+
+HOW ROLE-BASED ACCESS CONTROL (RBAC) WORKS:
+  After login, server gives a JWT token.
+  The token contains: userId, role (citizen/admin/department)
+  
+  Every API request includes this token in header:
+  Authorization: Bearer <token>
+  
+  Two middleware functions in server/middleware/auth.js:
+  - protect(req,res,next)      : verifies token is valid (user is logged in)
+  - authorize('admin')         : checks role matches required role
+  
+  If wrong role  -> 403 Forbidden response
+  If no token    -> 401 Unauthorized response
+  In React       -> ProtectedRoute component redirects to /login
+
+------------------------------------------------------------------------
+SLIDES 7-14 - APPLICATION SCREENS (Citizen Journey)
+------------------------------------------------------------------------
+
+SLIDE 7 - LANDING PAGE:
+  First screen visitors see. Shows:
+  - Headline: "Civic Issues Resolved Intelligently."
+  - Tagline: "Empowering Citizens, Transforming Cities"
+  - "Report an Issue" button + "Track Existing Complaint" button
+  - 3 feature highlights: AI Routing, Geolocation, Transparent Tracking
+  Design: Dark theme, purple accents, Framer Motion hover animations.
+
+SLIDE 8 - LOGIN AND SIGNUP:
+  SIGNUP: Name + Email + Password + Confirm Password -> "Create Account"
+    -> bcryptjs hashes password -> saved in MongoDB
+    -> Nodemailer sends verification email with link
+    -> User clicks link -> POST /api/auth/verify-email/:token -> account active
+    -> Now user can login
+
+  LOGIN: Email + Password -> "Sign In"
+    -> Server finds user in MongoDB
+    -> bcryptjs.compare() checks password against stored hash
+    -> If correct: server creates JWT token using jsonwebtoken
+    -> Token sent to browser -> saved in localStorage as "civicToken"
+    -> Every future request includes: Authorization: Bearer <token>
+
+  FORGOT PASSWORD: Enter email -> reset link sent via Nodemailer
+    -> Click link -> POST /api/auth/reset-password/:token -> new password saved
+
+SLIDE 9 - CITIZEN DASHBOARD:
+  After login, citizen sees personalized dashboard:
+  - Greeting: "Good Evening, Happy"
+  - 4 summary cards: Total | Pending | In Progress | Resolved
+  - Recent Complaints list with status badges
+  - "Raise New Complaint" button (top right)
+  
+  Technical: GET /api/complaints with JWT -> server returns only THIS user's complaints
+  React useState stores the data and renders the cards.
+
+SLIDE 10 - RAISE COMPLAINT STEP 1 (Details + AI):
+  4-step form: Details -> Location -> Media -> Review
+  
+  Step 1 fields: Title, Description, Category (8 options), Priority, Anonymous?
+  
+  "Analyze & Auto-Classify" button:
+  -> Axios POST to /api/ai/classify with {title, description}
+  -> Backend calls Gemini API with a structured prompt
+  -> Returns: {category, priority, confidence, suggestion}
+  -> Frontend shows result and pre-fills category/priority fields
+  
+  AI Chatbot panel (right side):
+  -> Citizens ask questions while filling form
+  -> POST /api/ai/chatbot -> Gemini generates answer
+  -> Quick question chips shown for common queries
+
+SLIDE 11 - RAISE COMPLAINT STEP 2 (Location) + STEP 3 (Media):
+  
+  Step 2 - Location Map:
+  - Leaflet.js map shows with OpenStreetMap tiles
+  - "Detect My Location" -> browser geolocation API gets GPS coords
+  - Search box -> geocoding to find address
+  - Click on map -> drops pin, saves {lat, lng} coordinates
+  
+  Step 3 - Media Upload:
+  - Images: max 5 photos (e.g., photo of pothole, broken light)
+  - Video: max 1 video, max 30MB
+  - Files sent as multipart/form-data
+  - Multer reads files -> streams to Cloudinary -> gets URL
+  - URLs stored in complaint.images[] and complaint.videos[] in MongoDB
+
+SLIDE 12 - REVIEW AND MY COMPLAINTS:
+  
+  Step 4 - Review:
+  Summary shows: Title, Description, Category, Priority, Address, Anonymous, Images count
+  "Submit Complaint" -> POST /api/complaints -> saved in MongoDB with status="pending"
+  -> AI suggestion, timeline entry, and SLA deadline also saved
+  
+  My Complaints Page:
+  - Lists all submitted complaints as cards
+  - Search bar + Status filter + Category filter
+  - Each card: category/priority/status badges, title, time
+
+SLIDE 13 - COMPLAINT DETAIL:
+  Complaint detail page - what citizen sees when they click a complaint:
+  
+  LEFT PANEL:
+  - Category, Priority, Status badges
+  - Title, description
+  - "Smart Analysis" box - shows AI result
+  - Upvote button (count updates in real-time)
+  - Location Map with pin
+  - Comments section with "Write a comment" box
+  
+  RIGHT PANEL:
+  - SLA Details: Target Resolution date
+  - Status Timeline stepper:
+    Submitted (done) -> Assigned -> In Progress -> Resolved
+  - Activity Log: timestamp entries for each status change
+  - Submitted By: name or "Anonymous Citizen"
+  
+  SLA = Service Level Agreement (deadline to resolve complaint):
+  High priority   = 3 days
+  Medium priority = 7 days
+  Low priority    = 14 days
+
+SLIDE 14 - CITIZEN PROFILE:
+  Citizen updates: Name, Avatar URL, Phone, Address
+  Tabs: Profile | Security (change password) | Notifications
+  
+  API: GET /api/auth/me (load data) + PUT /api/auth/profile (save changes)
+  Password hashed by bcryptjs before any update is saved.
+
+------------------------------------------------------------------------
+SLIDES 15-19 - ADMIN PANEL
+------------------------------------------------------------------------
+
+SLIDE 15 - ADMIN DASHBOARD:
+  Admin's overview of the entire system:
+  
+  KPI Cards Row 1: Total Complaints | Pending (orange) | Resolved (green) | SLA Breached (RED)
+  KPI Cards Row 2: Assigned | Registered Citizens | Departments
+  
+  Recent Complaints table: Title | Category | Priority | Status | Citizen | Time
+  
+  Top navigation: Dashboard | Complaints | Users | Departments | Analytics | SLA
+  
+  API: GET /api/admin/dashboard (admin role required)
+
+SLIDE 16 - MANAGE COMPLAINTS:
+  Table: all complaints with Title | Category | Priority | Status | Actions
+  Search bar + Status/Category/Priority filters
+  
+  "Manage" button opens popup modal:
+  Section 1 - Assign to Department:
+    -> Dropdown shows available departments
+    -> "Assign" -> PUT /api/complaints/:id/assign
+    -> Socket.io instantly notifies the department
+    -> Status changes to "assigned" automatically
+  
+  Section 2 - Update Status:
+    -> Dropdown: pending / assigned / in_progress / resolved / rejected
+    -> Optional remarks text
+    -> "Update Status" -> PUT /api/complaints/:id/status
+    -> Timeline entry added, citizen notified via Socket.io
+
+SLIDE 17 - USER MANAGEMENT:
+  Table: User(avatar+name) | Email | Role | Verified | Status | Joined | Actions
+  
+  Role badges: CITIZEN (purple) | DEPARTMENT (teal) | ADMIN (orange)
+  Verified: green checkmark badge
+  Status: ACTIVE (green) | BLOCKED (red)
+  
+  "Block" button (red):
+  -> PUT /api/admin/users/:id/block
+  -> Sets isBlocked = true in MongoDB User document
+  -> Blocked user: when they try to login, server sees isBlocked=true and rejects
+  -> Button changes to "Unblock" for already-blocked users
+  
+  Filter by role, search by name/email
+
+SLIDE 18 - DEPARTMENT MANAGEMENT:
+  Shows department cards:
+  - Name, description, "X assigned | X resolved"
+  - Staff members list (expandable)
+  - "+ Add Department User" button
+  
+  Create Department modal (click "+ Add Department"):
+  Fields: Name | Description | Email | Phone | Department Head | Categories
+  
+  Categories field is CRITICAL:
+  - Comma-separated: "sanitation, water"
+  - When admin tries to assign a "sanitation" complaint,
+    only departments with "sanitation" in categories appear in dropdown
+  - Prevents wrong department assignments
+  
+  API: POST /api/admin/departments -> creates in MongoDB
+       GET /api/admin/departments  -> lists all
+
+SLIDE 19 - ADMIN PROFILE:
+  Same React <Profile /> component as Citizen profile.
+  Shows ADMIN role badge (orange).
+  Same 3 tabs: Profile | Security | Notifications
+  API: same PUT /api/auth/profile endpoint
+
+------------------------------------------------------------------------
+SLIDE 20 - DEPARTMENT PANEL
+------------------------------------------------------------------------
+
+  Department staff login -> see "Assigned Complaints" page.
+  
+  Navigation: ONLY Assigned | Performance (no admin sections visible)
+  
+  Complaint cards show: Category | Priority | Status | Title | Description
+  Filter: "All Statuses" dropdown to filter their complaints
+  
+  "Manage ->" button options:
+  
+  ACCEPT complaint:
+  -> PUT /api/department/complaints/:id/accept
+  -> Status: "assigned" -> "in_progress"
+  -> SLA deadline confirmed and locked
+  -> Citizen gets Socket.io notification: "Department accepted your complaint"
+  
+  REJECT complaint:
+  -> PUT /api/department/complaints/:id/reject
+  -> Status: "rejected" with reason
+  -> Goes back to admin who can reassign to different department
+  
+  UPDATE PROGRESS:
+  -> PUT /api/department/complaints/:id/progress
+  -> Upload proof images (max 5 photos of the actual work being done)
+  -> Add progress notes
+  -> Timeline entry added
+  
+  MARK COMPLETE:
+  -> PUT /api/department/complaints/:id/complete
+  -> Status: "resolved"
+  -> resolvedAt timestamp saved in MongoDB
+  -> Citizen gets notification: "Your complaint has been RESOLVED!"
+
+------------------------------------------------------------------------
+SLIDE 21 - AI FEATURES (Google Gemini)
+------------------------------------------------------------------------
+
+THREE AI FEATURES IN RESOLVEX:
+
+1. COMPLAINT CLASSIFICATION (POST /api/ai/classify):
+   Input sent to Gemini: { title: "Sewage Complaint", description: "overflow" }
+   
+   Prompt engineering example (what we send to Gemini):
+   "Analyze this civic complaint. Return JSON only with:
+    category (one of: roads/water/sanitation/electricity/public_safety/parks/noise/animals/other),
+    priority (one of: low/medium/high),
+    confidence (0-100 integer),
+    suggestion (helpful text for the citizen)"
+   
+   Gemini response: {"category":"sanitation","priority":"medium","confidence":85,
+                     "suggestion":"Please include specific street addresses..."}
+   
+   Frontend shows this result and pre-fills category/priority automatically.
+   
+   MOCK FALLBACK (when no API key):
+   Simple keyword matching: "sewage" -> sanitation, "road" -> roads, "light" -> electricity
+   App still works without AI key, just less accurate.
+
+2. SUGGESTIONS (POST /api/ai/suggest):
+   Input: full complaint description
+   Gemini gives suggestions to make the complaint clearer
+   Helps citizens write better complaints that departments can act on faster
+
+3. AI CHATBOT (POST /api/ai/chatbot):
+   Shown on the right side of the complaint form
+   Citizens can ask:
+   - "How do I file a complaint?"
+   - "What issues can I report?"
+   - "How long does resolution take?"
+   - "Can I track my complaint?"
+   Gemini answers in simple, helpful language.
+   
+   Quick question chips make it easy to click and ask.
+
+PACKAGE USED: @google/generative-ai (official Google npm package for Gemini)
+API KEY: stored in .env file as GEMINI_API_KEY (never in source code)
+
+------------------------------------------------------------------------
+SLIDE 22 - DATABASE DESIGN (MongoDB Collections)
+------------------------------------------------------------------------
+
+DATABASE: MongoDB (NoSQL)
+LIBRARY : Mongoose (ODM - Object Document Mapper)
+HOSTING : MongoDB Atlas (cloud) or local MongoDB
+
+WHAT IS NoSQL?
+  Traditional SQL = rigid tables with fixed rows and columns.
+  MongoDB (NoSQL) = flexible JSON-like documents.
+  Each document can have different fields. 
+  Perfect for web apps where data structure can change.
+
+4 MAIN COLLECTIONS (like database tables):
+
+USERS Collection:
+  name          : "Amit Saini"
+  email         : "amit@example.com"
+  password      : "$2b$10$..." (bcrypt hash - NOT plain text)
+  role          : "citizen" | "admin" | "department"
+  isVerified    : true / false (email verified?)
+  isBlocked     : true / false (blocked by admin?)
+  phone         : "+91 9876543210"
+  address       : "Sonipat, Haryana"
+  verificationToken : "abc123" (cleared after verification)
+  resetToken        : "xyz789" (cleared after password reset)
+  lastLogin     : Date
+  createdAt     : Date
+
+COMPLAINTS Collection:
+  title         : "Sewage Complaint"
+  description   : "overflow"
+  category      : "sanitation"
+  priority      : "low" | "medium" | "high"
+  status        : "pending" | "assigned" | "in_progress" | "resolved" | "rejected"
+  citizen       : ObjectId (reference to User who submitted)
+  assignedTo    : ObjectId (reference to Department)
+  location      : { lat: 28.99, lng: 76.95, address: "Main Road" }
+  images        : ["https://cloudinary.com/img1.jpg", ...]
+  videos        : ["https://cloudinary.com/video1.mp4"]
+  upvotes       : [userId1, userId2] (array - each user can upvote only once)
+  comments      : [{ user, text, isAnonymous, createdAt }]
+  timeline      : [{ status, message, timestamp }]
+  slaDeadline   : Date (High=3days, Medium=7days, Low=14days from creation)
+  slaBreached   : false (set to true by cron job if overdue)
+  aiSuggestion  : "Identified key terms relating to sanitation department"
+  isAnonymous   : true / false
+  createdAt     : Date
+
+DEPARTMENTS Collection:
+  name          : "Electricity Board"
+  description   : "Manage Bijli Board"
+  email         : "electricity@gov.in"
+  phone         : "..."
+  head          : "Jee (department head name)"
+  categories    : ["electricity", "roads"] (which complaint types come here)
+  members       : [userId1, userId2] (department staff user IDs)
+  totalAssigned : 5 (count)
+  totalResolved : 3 (count)
+
+NOTIFICATIONS Collection:
+  user          : ObjectId (who receives this notification)
+  title         : "Complaint Assigned"
+  message       : "Your Street Light complaint has been assigned to Roads Dept"
+  type          : "status_update" | "assigned" | "resolved" | etc.
+  isRead        : false (unread) | true (read)
+  complaintId   : ObjectId (which complaint this is about)
+  createdAt     : Date
+
+------------------------------------------------------------------------
+SLIDE 23 - REST API ROUTES
+------------------------------------------------------------------------
+
+WHAT IS A REST API?
+  REST = Representational State Transfer
+  The frontend sends HTTP requests to specific URLs (endpoints).
+  The server processes the request and returns JSON data.
+  
+  HTTP Methods:
+  GET    = read / fetch data (no body sent)
+  POST   = create new data (body with data sent)
+  PUT    = update existing data (body with changes sent)
+  DELETE = remove data
+
+ALL API ROUTES (Base: http://localhost:5000/api):
+
+AUTH (/api/auth):
+  POST   /register               - Create account
+  POST   /login                  - Get JWT token
+  GET    /verify-email/:token    - Activate account via email link
+  POST   /resend-verification    - Resend activation email
+  POST   /forgot-password        - Send password reset email
+  POST   /reset-password/:token  - Set new password
+  GET    /me                     - Get my profile [PROTECTED]
+  PUT    /profile                - Update my profile [PROTECTED]
+  PUT    /change-password        - Change password [PROTECTED]
+
+COMPLAINTS (/api/complaints):
+  GET    /                       - List complaints (role-filtered) [PROTECTED]
+  POST   /                       - Create complaint [CITIZEN ONLY]
+  GET    /heatmap                - Location data for map [PROTECTED]
+  GET    /:id                    - Get one complaint by ID [PROTECTED]
+  PUT    /:id/status             - Update status [ADMIN/DEPT]
+  PUT    /:id/assign             - Assign to department [ADMIN ONLY]
+  POST   /:id/upvote             - Toggle upvote [PROTECTED]
+  POST   /:id/comment            - Add comment [PROTECTED]
+
+ADMIN (/api/admin):
+  GET    /dashboard              - KPI numbers [ADMIN ONLY]
+  GET    /analytics              - Chart data [ADMIN ONLY]
+  GET    /complaints             - All complaints [ADMIN ONLY]
+  GET    /sla                    - SLA breach report [ADMIN ONLY]
+  GET    /users                  - All users list [ADMIN ONLY]
+  PUT    /users/:id/block        - Block/unblock user [ADMIN ONLY]
+  GET    /departments            - All departments [ADMIN ONLY]
+  POST   /departments            - Create department [ADMIN ONLY]
+  PUT    /departments/:id        - Update department [ADMIN ONLY]
+  POST   /users/department       - Create dept user [ADMIN ONLY]
+
+DEPARTMENT (/api/department):
+  GET    /assigned               - My complaints [DEPT ONLY]
+  PUT    /complaints/:id/accept  - Accept complaint [DEPT ONLY]
+  PUT    /complaints/:id/reject  - Reject complaint [DEPT ONLY]
+  PUT    /complaints/:id/progress- Upload proof + progress [DEPT ONLY]
+  PUT    /complaints/:id/complete- Mark resolved [DEPT ONLY]
+  GET    /performance            - My stats [DEPT ONLY]
+
+NOTIFICATIONS (/api/notifications):
+  GET    /                       - My notifications [PROTECTED]
+  PUT    /read-all               - Mark all as read [PROTECTED]
+  PUT    /:id/read               - Mark one as read [PROTECTED]
+
+AI (/api/ai):
+  POST   /classify               - AI classify complaint [PROTECTED]
+  POST   /suggest                - AI get suggestions [PROTECTED]
+  POST   /chatbot                - AI chatbot answer [PROTECTED]
+
+HEALTH CHECK:
+  GET    /api/health             - Check if server is running (no auth needed)
+
+------------------------------------------------------------------------
+SLIDE 24 - REAL-TIME NOTIFICATIONS AND SLA MONITORING
+------------------------------------------------------------------------
+
+SOCKET.IO - HOW REAL-TIME WORKS:
+
+  Old way (HTTP Polling):
+  Browser asks server every 5 seconds: "Any updates?"
+  Server: "No" | "No" | "Yes, here is the update"
+  Wasteful and slow.
+
+  New way (WebSocket / Socket.io):
+  Browser connects ONCE -> connection stays open permanently.
+  Server can push messages to browser ANY TIME.
+  Like receiving WhatsApp messages - they arrive instantly.
+
+  STEP-BY-STEP in Resolvex:
+  1. User logs in -> browser calls socket.connect() to server
+  2. Backend registers user: socket.join("user_" + userId)
+     (creates a private "room" for each user)
+  3. Admin assigns complaint to Electricity Board:
+     -> Backend code: io.to("user_" + deptUserId).emit("notification", data)
+  4. Electricity Board's browser receives "notification" event
+  5. React event listener updates notification bell count (+1) INSTANTLY
+  6. Toast popup appears: "New complaint assigned to you"
+  7. Notification also saved to MongoDB for history
+
+  Events used:
+  - "notification"  : new notification for a user
+  - "complaint_update" : complaint status changed
+
+NODE-CRON - SCHEDULED BACKGROUND JOBS:
+
+  What is node-cron?
+  A package that runs JavaScript code automatically at scheduled times.
+  Like setting an alarm for your server - it runs code when the timer fires.
+
+  Cron expression syntax: "minute hour day month weekday"
+  Example: "0 * * * *" means "at minute 0 of EVERY HOUR"
+
+  THE SLA CRON JOB (runs every hour automatically):
+  
+  SLA = Service Level Agreement (maximum time to resolve a complaint):
+    High priority   -> 3 days deadline
+    Medium priority -> 7 days deadline
+    Low priority    -> 14 days deadline
+  
+  Every hour the cron job:
+  1. Queries MongoDB: find all complaints where status != resolved/rejected
+  2. For each unresolved complaint:
+     Check: Is today's date > slaDeadline?
+  3. If YES and slaBreached is still false:
+     -> Update: complaint.slaBreached = true
+     -> Create notification for admin: "SLA breached for [complaint name]"
+  4. Admin dashboard shows SLA Breached count in RED
+  
+  Why this matters:
+  - Departments are held ACCOUNTABLE for resolving on time
+  - Admin can see which complaints are overdue
+  - Creates pressure to fix problems faster
+  - Completely automatic - no human needs to manually check
+
+------------------------------------------------------------------------
+SLIDE 25 - CHALLENGES AND LEARNING
+------------------------------------------------------------------------
+
+CHALLENGE 1 - JWT Role-Based Authentication:
+  Problem: Need different access for Citizen, Admin, Department. Complex to implement.
+  Solution learned:
+  - server/middleware/auth.js has two functions:
+    protect(req,res,next): verifies JWT with jsonwebtoken.verify()
+    authorize(...roles): checks req.user.role is in allowed roles array
+  - Applied to routes: router.get("/", protect, authorize("admin"), controller)
+  - In React: ProtectedRoute component wraps all role-specific pages
+    If user role doesn't match -> redirect to /login
+  KEY LEARNING: JWT-based stateless authentication + React protected routes
+
+CHALLENGE 2 - Google Gemini AI Integration:
+  Problem: Getting Gemini to return structured, consistent JSON was tricky.
+  Solution learned:
+  - Prompt engineering: tell AI exactly what format to return
+    "Return ONLY valid JSON. No markdown. Fields: category, priority, confidence, suggestion"
+  - Parse and validate the response before using it
+  - Built a FALLBACK: if Gemini API key missing -> keyword-based mock classification
+    This ensures app works in demo even without internet or API key
+  KEY LEARNING: Prompt engineering + graceful degradation pattern
+
+CHALLENGE 3 - Socket.io Real-Time Notifications:
+  Problem: Making data appear on screen WITHOUT refreshing the page was a new concept.
+  Solution learned:
+  - Socket.io server: io = new Server(server, { cors: { origin: clientUrl } })
+  - Socket.io client: const socket = io(serverUrl)
+  - Rooms concept: socket.join("user_" + userId) -> private channel per user
+  - Server emits: io.to("user_" + id).emit("notification", data)
+  - Client listens: socket.on("notification", callback)
+  KEY LEARNING: WebSocket event-driven programming + Socket.io rooms
+
+CHALLENGE 4 - File Upload Pipeline:
+  Problem: Multi-step process that can fail at any point - hard to handle errors.
+  Solution learned:
+  - Multer reads file from HTTP request (stored temporarily in memory or disk)
+  - Cloudinary SDK: cloudinary.uploader.upload(buffer) returns URL
+  - All steps wrapped in try-catch blocks
+  - If Cloudinary fails -> error returned to client with clear message
+  - Set strict limits: images max 5MB each, videos max 30MB
+  KEY LEARNING: Multer middleware + Cloudinary integration + error handling
+
+CHALLENGE 5 - SLA Cron Job:
+  Problem: Running automatic background code without any user action.
+  Solution learned:
+  - node-cron package: cron.schedule("0 * * * *", async () => { ... })
+  - Added a "running" flag to prevent multiple executions overlapping
+  - Used Mongoose queries to find overdue complaints efficiently
+  KEY LEARNING: Scheduled background jobs + cron expressions
+
+CHALLENGE 6 - Responsive Modern UI:
+  Problem: Making interface look professional and work on all screen sizes.
+  Solution learned:
+  - CSS Flexbox for flexible row/column layouts
+  - CSS Grid for card-based layouts (complaint cards, dashboard cards)
+  - Framer Motion: variants + animate props for smooth animations
+  - Dark color theme with purple accents (HSL color values for consistency)
+  KEY LEARNING: Modern CSS layout + animation libraries
+
+------------------------------------------------------------------------
+SLIDE 26 - CONCLUSION AND FUTURE SCOPE
+------------------------------------------------------------------------
+
+WHAT WAS BUILT - SUMMARY:
+  [OK] Complete full-stack web application built from scratch
+  [OK] 3 role-based dashboards: Citizen + Admin + Department
+  [OK] AI classification using Google Gemini API
+  [OK] Real-time notifications using Socket.io WebSockets
+  [OK] Interactive maps using Leaflet.js + OpenStreetMap
+  [OK] Secure JWT authentication with bcrypt password hashing
+  [OK] Email verification and password reset via Nodemailer
+  [OK] SLA monitoring with automated node-cron background jobs
+  [OK] File uploads: Multer + Cloudinary cloud storage
+  [OK] Admin analytics dashboard with KPI cards
+  [OK] RESTful API with role-based access control (RBAC)
+  [OK] Modern responsive dark UI with Framer Motion animations
+
+FUTURE IMPROVEMENTS (things that can be added):
+
+  1. Mobile App (React Native):
+     Build a phone app so citizens can report issues directly from camera.
+     React Native can share business logic with the React web app.
+
+  2. AI Hotspot Prediction:
+     Analyze historical complaint data using ML to predict:
+     "Street X is likely to have problems next month"
+     Proactive maintenance instead of reactive fixes.
+
+  3. SMS Notifications (Twilio):
+     Send text messages to citizens who don't have smartphones.
+     Twilio API integration with node-cron triggers.
+
+  4. Hindi and Regional Language Support:
+     Add i18n (internationalization) library.
+     Allow UI in Hindi, Tamil, Telugu, etc.
+     More citizens can use the system.
+
+  5. Voice-Based Complaint Filing:
+     Citizen speaks their complaint.
+     Web Speech API converts speech to text.
+     AI processes the text and submits the complaint automatically.
+
+  6. AI Auto-Assignment:
+     Currently: Admin manually assigns complaints to departments.
+     Future: AI reads category + area + department workload and automatically assigns.
+     No manual admin intervention needed.
+
+CLOSING STATEMENT (say this at the end):
+  "Resolvex demonstrates how modern web development technologies
+   and artificial intelligence can be combined to solve real civic problems
+   that millions of Indian citizens face every day.
+   
+   Building this project gave me hands-on experience in:
+   - Full-stack JavaScript development (React + Node.js + MongoDB)
+   - REST API design and JWT security
+   - Real-time communication using WebSockets (Socket.io)
+   - AI API integration (Google Gemini)
+   - Cloud services (Cloudinary, MongoDB Atlas)
+   - Automated scheduling (node-cron)
+   
+   Thank you for your time and attention.
+   I am happy to answer any questions."
+
+------------------------------------------------------------------------
+SLIDE 27 - THANK YOU
+------------------------------------------------------------------------
+
+  Presenter : Amit Saini
+  Course    : MCA (Master of Computer Applications)
+  University: Kurukshetra University
+  Project   : Resolvex - Civic Problem Management System
+  GitHub    : AHSAINI0405/Civic-Problem-Resolvex
+
+  POSSIBLE EXAMINER QUESTIONS AND ANSWERS:
+
+  Q: What language did you use?
+  A: JavaScript for both frontend and backend.
+     Frontend: React.js | Backend: Node.js + Express.js
+
+  Q: What database did you use and why MongoDB?
+  A: MongoDB - because it is a NoSQL database that stores data as flexible
+     JSON documents. Since our complaint data can vary in structure
+     (some have images, some have location, some are anonymous),
+     MongoDB is more flexible than a traditional SQL database.
+
+  Q: How does the AI work?
+  A: We use Google Gemini API. When a citizen types a complaint,
+     we send the title and description to Gemini with a structured prompt.
+     Gemini returns JSON with category, priority, confidence score,
+     and a helpful suggestion. We display this to the citizen.
+
+  Q: How do real-time notifications work?
+  A: We use Socket.io which creates WebSocket connections.
+     Unlike normal HTTP, WebSocket keeps a permanent open connection.
+     So when admin assigns a complaint, the server instantly pushes
+     a notification event to the department's browser without any refresh.
+
+  Q: How is security handled?
+  A: Three layers:
+     1. Passwords hashed with bcryptjs (never stored as plain text)
+     2. JWT tokens for authentication (stateless, expires automatically)
+     3. Role-based middleware (only correct role can access each route)
+
+  Q: What is SLA and how does it work?
+  A: SLA = Service Level Agreement (deadline to resolve complaint).
+     High priority = 3 days, Medium = 7 days, Low = 14 days.
+     A node-cron job runs every hour and checks if any unresolved complaint
+     has passed its deadline. If yes, it marks it as "SLA Breached" and
+     notifies the admin with a red alert on the dashboard.
+
+  Q: How do file uploads work?
+  A: The citizen selects photos/videos on the form.
+     They are sent as multipart/form-data to the backend.
+     Multer middleware reads the files.
+     Files are uploaded to Cloudinary (cloud storage).
+     Cloudinary returns a URL.
+     The URL is saved in MongoDB alongside the complaint.
+
+  Q: What is the difference between the three user panels?
+  A: Citizen: reports problems, tracks own complaints only.
+     Admin: sees all complaints, assigns to departments, manages users.
+     Department: sees only their assigned complaints, resolves them.
+     Access is controlled by JWT role field + middleware on every route.
+
+========================================================================
+END OF SPEAKER NOTES - RESOLVEX
+========================================================================

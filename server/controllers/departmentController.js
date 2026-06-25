@@ -106,7 +106,13 @@ exports.updateProgress = asyncHandler(async (req, res) => {
 
   addTimeline(complaint, 'in_progress', remarks || 'Progress update from department.', req.user._id);
 
-  const proofImages = (req.files || []).map((f) => ({ url: `/uploads/${f.filename}`, publicId: f.filename }));
+  const proofImages = (req.files || []).map((f) => {
+    const isCloudinary = f.path && (f.path.startsWith('http://') || f.path.startsWith('https://'));
+    return {
+      url: isCloudinary ? f.path : `/uploads/${f.filename}`,
+      publicId: f.filename || f.public_id,
+    };
+  });
   if (proofImages.length) complaint.proofImages.push(...proofImages);
 
   await complaint.save();
