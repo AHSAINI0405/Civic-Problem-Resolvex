@@ -46,7 +46,7 @@ const mockClassify = (title, description) => {
  * Classify complaint text using Gemini AI
  */
 exports.classifyComplaint = async (title, description) => {
-  if (!process.env.GEMINI_API_KEY || process.env.GEMINI_API_KEY === 'your_gemini_api_key_here') {
+  if (!process.env.GEMINI_API_KEY) {
     return mockClassify(title, description);
   }
   try {
